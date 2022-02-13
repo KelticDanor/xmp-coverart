@@ -6,7 +6,7 @@ The plugin also includes an automatic cover download feature.
 
 ## Download
 You can find a binary download under the
-[Releases page](https://github.com/schellingb/xmp-coverart/releases/latest).
+[Releases page](https://github.com/KelticDanor/xmp-coverart/releases/latest).
 
 ## Screenshot
 ![Screenshot](https://raw.githubusercontent.com/schellingb/xmp-coverart/master/README.png)
