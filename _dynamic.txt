@@ -1,0 +1,64 @@
+First Ogg Header =
+27 is 8 bit int
+27 + 1 = 28
+
+Opus Header =
+1st 8 bit int = size of Opus Head
+Lets skip that 19
+
+Next Ogg header =
+27 is 8 bit int
+27 + 255 = 282
+
+
+
+
+65025
+
+
+
+65280?
+
+
+
+
+
+
+
+
+
+	unsigned long tmpVar,tmpSiz,tmpCnt;
+	unsigned long absPos, absMax;
+	bool tagFetched = false, tagOpened = false;
+	if (!f) return;
+	if (!XMPlay_File->Seek(f, 0)) return; absPos = 0;
+
+
+	// LETS DEAL WITH THE FIRST HEADER
+	if (!XMPlay_File->Read(f, &tmpVar, 4)) return; absPos += 4;
+	if (l != 1399285583) return;
+	if (!XMPlay_File->Seek(f, absPos + 23)) return; absPos += 23;
+	if (!XMPlay_File->Read(f, &tmpVar, 1)) return; absPos += 1;
+	tmpSiz = tmpVar;
+	for (int i = 0; i < tmpVar; i++) {
+		if (!XMPlay_File->Read(f, &tmpCnt, 1)) return; absPos += 1;
+		tmpSiz += tmpCnt;
+	}
+	absMax = absPos + tmpSiz;
+
+	if (!XMPlay_File->Seek(f, absMax)) return; absPos += tmpSiz;
+
+
+	// LETS DEAL WITH THE TAG HEADER
+	while (tagFetched == false) {
+		if (!XMPlay_File->Read(f, &tmpVar, 4)) return; absPos += 4;
+		if (l != 1399285583) return;
+		if (!XMPlay_File->Seek(f, absPos + 23)) return; absPos += 23;
+		if (!XMPlay_File->Read(f, &tmpVar, 1)) return; absPos += 1;
+		tmpSiz = tmpVar;
+		for (int i = 0; i < tmpVar; i++) {
+			if (!XMPlay_File->Read(f, &tmpCnt, 1)) return; absPos += 1;
+			tmpSiz += tmpCnt;
+		}
+		if (!XMPlay_File->Seek(f, absPos + tmpSiz)) return; absPos += tmpSiz;
+	}

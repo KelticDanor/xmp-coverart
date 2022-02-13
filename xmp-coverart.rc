@@ -11,9 +11,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 		BLOCK "040904b0"
 		{
 			VALUE "ProductName", "xmp-coverart"
-			VALUE "ProductVersion", "rev.8"
+			VALUE "ProductVersion", "rev.9"
 			VALUE "FileDescription", "XMPlay Cover/Album Art Plugin"
-			VALUE "FileVersion", "rev.8"
+			VALUE "FileVersion", "rev.9"
 			VALUE "InternalName", "xmp-coverart"
 			VALUE "OriginalFilename", "xmp-coverart.svp"
 			VALUE "Comments", "http://www.un4seen.com"
