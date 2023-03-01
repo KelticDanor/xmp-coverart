@@ -1764,7 +1764,8 @@ static BOOL receivequeryinterface(QueryInterface* queryinterface)
 		XMPlay_Status = (XMPFUNC_STATUS*)xmpface(XMPFUNC_STATUS_FACE);
 		XMPlay_File = (XMPFUNC_FILE*)xmpface(XMPFUNC_FILE_FACE);
 		XMPlay_Text = (XMPFUNC_TEXT*)xmpface(XMPFUNC_TEXT_FACE);
-		unsigned char x[4]; const char* c;
+		unsigned int x[4];
+		const char* c;
 		c = XMPlay_Misc->GetSkinConfig("color_infoback");
 		if (c) { sscanf(c, "%x%x%x", x, x + 1, x + 2); colBackground = RGB(x[0], x[1], x[2]); cBackground[0] = x[2]; cBackground[1] = x[1]; cBackground[2] = x[0]; }
 		c = XMPlay_Misc->GetSkinConfig("color_listcurrent");
