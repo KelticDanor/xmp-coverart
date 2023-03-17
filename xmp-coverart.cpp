@@ -96,15 +96,11 @@ struct sFoundCover
 };
 
 static bool NU = false;
-static unsigned char cBackground[3];
 
 static BOOL bFadeAlbumart = TRUE;
 static int iAlbumArtAlign = 0;
 
-static long colBackground = 0;
-static long colInfoLine1 = RGB(145, 165, 170);
-static long colInfoLine2 = RGB(113, 133, 143);
-static long colInfoLine3 = RGB(100, 100, 130);
+static long colBackground = 0; // RGBQUAD
 
 static HMENU hMenu = NULL, hACDMenu = NULL, hCoverMenu = NULL;
 
@@ -1764,16 +1760,15 @@ static BOOL receivequeryinterface(QueryInterface* queryinterface)
 		XMPlay_Status = (XMPFUNC_STATUS*)xmpface(XMPFUNC_STATUS_FACE);
 		XMPlay_File = (XMPFUNC_FILE*)xmpface(XMPFUNC_FILE_FACE);
 		XMPlay_Text = (XMPFUNC_TEXT*)xmpface(XMPFUNC_TEXT_FACE);
-		unsigned int x[4];
 		const char* c;
 		c = XMPlay_Misc->GetSkinConfig("color_infoback");
-		if (c) { sscanf(c, "%x%x%x", x, x + 1, x + 2); colBackground = RGB(x[0], x[1], x[2]); cBackground[0] = x[2]; cBackground[1] = x[1]; cBackground[2] = x[0]; }
-		c = XMPlay_Misc->GetSkinConfig("color_listcurrent");
-		if (c) { sscanf(c, "%x%x%x", x, x + 1, x + 2); colInfoLine1 = RGB(x[0], x[1], x[2]); }
-		c = XMPlay_Misc->GetSkinConfig("color_title");
-		if (c) { sscanf(c, "%x%x%x", x, x + 1, x + 2); colInfoLine2 = RGB(x[0], x[1], x[2]); }
-		c = XMPlay_Misc->GetSkinConfig("color_text");
-		if (c) { sscanf(c, "%x%x%x", x, x + 1, x + 2); colInfoLine3 = RGB(x[0], x[1], x[2]); }
+		if (c) {
+			char* e;
+			colBackground = strtoul(c, &e, 16);
+			if (e - c == 8) // has alpha
+				colBackground >>= 8; // exclude it
+		} else
+			colBackground = 0;
 		g_XMPlayHWND = XMPlay_Misc->GetWindow();
 	}
 
@@ -2154,15 +2149,15 @@ static BOOL render(unsigned long* Video, int width, int height, int pitch, VisDa
 		else
 		{
 			bool bFillX = (scx < width);
-			unsigned char v[3] = { *((unsigned char*)(&colBackground) + 0), *((unsigned char*)(&colBackground) + 1), *((unsigned char*)(&colBackground) + 2) };
+			const unsigned char *v = (unsigned char*)&colBackground;
 			for (int z = 0; z < (bFillX ? width - scx : height - scy); z++)
 			{
 				for (int zz = 0; zz < (bFillX ? height : width); zz++)
 				{
 					unsigned char* p = (unsigned char*)&Video[pitch * (bFillX ? zz : (z >= yoff ? z + scy : z)) + (!bFillX ? zz : (z >= xoff ? z + scx : z))];
-					for (char c = 0; c < 3; c++)
+					for (int c = 0; c < 3; c++)
 					{
-						float vv = *(p + c);
+						unsigned char vv = *(p + c);
 						*(p + c) = ((unsigned char)((vv + ((v[c] - vv) / (11.0f - iFadeLevel)))));
 					}
 				}
@@ -2176,7 +2171,7 @@ static BOOL render(unsigned long* Video, int width, int height, int pitch, VisDa
 						unsigned char* p = (unsigned char*)&Video[pitch * (z >= yoff ? z + scy : z) + zz];
 						for (char c = 0; c < 3; c++)
 						{
-							float vv = *(p + c);
+							unsigned char vv = *(p + c);
 							*(p + c) = ((unsigned char)((vv + ((v[c] - vv) / (11.0f - iFadeLevel)))));
 						}
 					}
@@ -2188,14 +2183,15 @@ static BOOL render(unsigned long* Video, int width, int height, int pitch, VisDa
 			for (int x = 0; x < scx && x + xoff < width; x++)
 			{
 				unsigned char* p = (unsigned char*)&Video[pitch * (y + yoff) + x + xoff];
-				for (char c = 0; c < 3; c++)
+				unsigned char* pv = &pScaledCoverVideo[(scx * y + x) * 3];
+				for (int c = 0; c < 3; c++)
 				{
-					float v = pScaledCoverVideo[(scx * y + x) * 3 + c];
-					if (iFadeLevel >= 10) *(p + c) = (unsigned char)v;
+					unsigned char v = *(pv + c);
+					if (iFadeLevel >= 10) *(p + c) = v;
 					else
 					{
-						float vv = *(p + c);
-						*(p + c) = ((unsigned char)((vv + ((v - vv) / (11 - iFadeLevel)))));
+						unsigned char vv = *(p + c);
+						*(p + c) = ((unsigned char)((vv + ((v - vv) / (11.0f - iFadeLevel)))));
 					}
 				}
 			}

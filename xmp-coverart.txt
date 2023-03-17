@@ -1,5 +1,5 @@
 --------------------------------------------
-             xmp-coverart rev.8
+             xmp-coverart rev.9
      ----------------------------------
       2008-2019 Bernhard Schelling
  https://github.com/schellingb/xmp-coverart
@@ -52,6 +52,22 @@ Notes:
 
 -----------------------------------------------------------------------------------------------
 
+[2022_02_13 - rev.9]
+
+  Itunes website based cover art lookup added
+  Discogs, Last.fm & MusicBrainz API webservice cover art lookups added
+  Existing old cover art sources removed due to no longer working
+  Streams with embedded url for cover art now supported, requires the latest XMPlay version
+	Also added an option to continue searching for other cover art even if an embedded url is present
+  Support for Opus with cover art embedded in meta data
+  Support for Flac with cover art embedded in meta data tweaked
+  New manual vis.ini setting for background color
+	[coverart]
+	acd_backr=12
+	acd_backg=98
+	acd_backb=255
+  cover.png and download.png added to archive to better indicate it is possible to do so
+  
 [2019_08_29 - rev.8]
 
   Release source code, cleaned up internals, tested with Windows 10
